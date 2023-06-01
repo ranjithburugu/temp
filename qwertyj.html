@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>JWT Authentication Example</title>
+  </head>
+  <body bgcolor="grey">
+    <div id="app" align="center">
+      <form onsubmit="authenticate(event)">
+        <label>
+          Username:
+          <input type="text" id="username" name="username" required />
+        </label>
+        <br />
+        <br>
+        <label>
+          Password:
+          <input type="password" id="password" name="password" required />
+        </label>
+        <br />
+        <br>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <script>
+      function authenticate(event) {
+        event.preventDefault(); // prevent form submission
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // send authentication request to the server
+        fetch('http://localhost:5000/hello', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json(); // return the response as JSON
+            } else {
+              throw new Error('Authentication failed');
+            }
+          })
+          .then(data => {
+            localStorage.setItem('token', data.token); // store the JWT in localStorage
+            console.log('Authentication successful');
+          })
+          .catch(error => {
+            console.error(error);
+            alert('Authentication failed');
+          });
+      }
+    </script>
+  </body>
+</html>
